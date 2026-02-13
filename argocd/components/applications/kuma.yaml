@@ -6,10 +6,10 @@ spec:
   project: develop
   source:
     repoURL: 'https://github.com/PawaOx4th/kube-demo.git'
-    path: helm-nginx-ui
-    targetRevision: master
+    path: helm-kuma
+    targetRevision: main
     helm:
-      releaseName: nginx-ui
+      releaseName: kuma
       valueFiles:
         - values.yaml
   destination:
