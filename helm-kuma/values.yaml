@@ -3,7 +3,7 @@ global:
     # -- Default registry for all Kuma Images docker pull kumahq/kuma-cp:2.12.6
     registry: "docker.io/kumahq/kuma-cp"
     # -- The default tag for all Kuma images, which itself defaults to .Chart.AppVersion
-    tag: "2.12.6"
+    tag: 2.12.6
   # -- Add `imagePullSecrets` to all the service accounts used for Kuma components
   imagePullSecrets: []
 
