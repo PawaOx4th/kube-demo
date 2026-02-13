@@ -13,7 +13,7 @@ spec:
       valueFiles:
         - values.yaml
   destination:
-    name: kpc-dev
+    name: minikube
     namespace: dev
   syncPolicy:
     automated: {}
