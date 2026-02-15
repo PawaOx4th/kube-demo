@@ -49,9 +49,9 @@ securityContext:
   # runAsUser: 1000
 
 service:
-  type: NodePort
+  type: LoadBalancer
   port: 3001
-  nodePort: 30001  # เลือก port 30000-32767
+  nodePort:
   annotations: {}
 
 ingress:
