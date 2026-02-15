@@ -1,42 +1,23 @@
-{{ .Chart.Name }} has been installed!
-
-Your release is named '{{ .Release.Name }}'.
-
-You can access the control-plane via either the GUI, kubectl, the HTTP API, or the kumactl CLI.
-{{- if .Values.noHelmHooks }}
-
--------------------------------------------------------------------------------
-
- WARNING
-
-    When the "noHelmHooks" value is provided, you will need to manually delete
-    the "ValidatingWebhookConfiguration" responsible for validating {{ include "kuma.name" . }} resources
-    before you can uninstall Helm release. This is because the validation provided
-    by the webhook is not necessary during the release removal and might potentially
-    even prevent you from doing it. You can do this by running the following command:
-
-    kubectl delete ValidatingWebhookConfiguration {{ include "kuma.name" . }}-validating-webhook-configuration
-
- WARNING
-
-    When the "noHelmHooks" value is set, Helm will not automatically update
-    the CustomResourceDefinitions (CRDs) when upgrading release. You must manually
-    update the CRDs if the new {{ include "kuma.name" . }} version has changes
-    to the CRDs. You can achieve this by calling the following command:
-
-    kumactl install crds --no-config | kubectl apply -f
-
-{{- if and .Values.experimental.ebpf.enabled (not .Values.cni.enabled) }}
-
- WARNING
-
-    When the "noHelmHooks" value is set, Helm will not automatically uninstall
-    the eBPF resources. You will need to manually uninstall these resources after
-    uninstalling Helm release. To do this, run the following command:
-
-    kumactl uninstall ebpf --cleanup-image-registry {{ .Values.global.image.registry }} --cleanup-image-repository {{ .Values.dataPlane.initImage.repository }}
-
+1. Get the application URL by running these commands:
+{{- if .Values.ingress.enabled }}
+{{- range $host := .Values.ingress.hosts }}
+  {{- range .paths }}
+  http{{ if $.Values.ingress.tls }}s{{ end }}://{{ $host.host }}{{ .path }}
+  {{- end }}
 {{- end }}
-
--------------------------------------------------------------------------------
+{{- else if contains "NodePort" .Values.service.type }}
+  export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ include "uptime-kuma.fullname" . }})
+  export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
+  echo http://$NODE_IP:$NODE_PORT
+{{- else if contains "LoadBalancer" .Values.service.type }}
+     NOTE: It may take a few minutes for the LoadBalancer IP to be available.
+           You can watch the status of by running 'kubectl get --namespace {{ .Release.Namespace }} svc -w {{ include "uptime-kuma.fullname" . }}'
+  export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ include "uptime-kuma.fullname" . }} --template "{{"{{ range (index .status.loadBalancer.ingress 0) }}{{.}}{{ end }}"}}")
+  echo http://$SERVICE_IP:{{ .Values.service.port }}
+{{- else if contains "ClusterIP" .Values.service.type }}
+  export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app.kubernetes.io/name={{ include "uptime-kuma.name" . }},app.kubernetes.io/instance={{ .Release.Name }}" -o jsonpath="{.items[0].metadata.name}")
+  export CONTAINER_PORT=$(kubectl get pod --namespace {{ .Release.Namespace }} $POD_NAME -o jsonpath="{.spec.containers[0].ports[0].containerPort}")
+  echo "Visit http://127.0.0.1:3001 to use your application"
+  kubectl --namespace {{ .Release.Namespace }} port-forward $POD_NAME 3001:$CONTAINER_PORT
 {{- end }}
+  
