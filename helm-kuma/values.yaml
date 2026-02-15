@@ -77,7 +77,7 @@ ingress:
         proxy_cache_bypass $http_upgrade;
       }
   hosts:
-    - host: uptime-kuma.example.com
+    - host: localhost
       paths:
         - path: /
           pathType: ImplementationSpecific
