@@ -55,7 +55,7 @@ service:
   annotations: {}
 
 ingress:
-  enabled: false
+  enabled: enable
   # className: ""
   extraLabels:
     {}
