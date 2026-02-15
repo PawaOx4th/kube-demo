@@ -49,9 +49,9 @@ securityContext:
   # runAsUser: 1000
 
 service:
-  type: ClusterIP
+  type: NodePort
   port: 3001
-  nodePort:
+  nodePort: 30001  # เลือก port 30000-32767
   annotations: {}
 
 ingress:
