@@ -55,8 +55,8 @@ service:
   annotations: {}
 
 ingress:
-  enabled: enable
-  # className: ""
+  enabled: true
+  className: "nginx"
   extraLabels:
     {}
     # vhost: uptime-kuma.company.corp
@@ -77,7 +77,7 @@ ingress:
         proxy_cache_bypass $http_upgrade;
       }
   hosts:
-    - host: chart-example.local
+    - host: uptime-kuma.example.com
       paths:
         - path: /
           pathType: ImplementationSpecific
