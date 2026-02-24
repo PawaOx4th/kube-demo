@@ -97,6 +97,8 @@ postgresql:
     tag: 17.5.0-debian-12-r3
   auth:
     postgresPassword: "postgres"
+  volumePermissions:
+    enabled: true
   primary:
     initdb:
       scripts:
