@@ -99,6 +99,10 @@ postgresql:
     postgresPassword: "postgres"
   volumePermissions:
     enabled: true
+    image:
+      registry: gcr.io
+      repository: kingpowerclick/postgresql
+      tag: 17.5.0-debian-12-r3
   primary:
     initdb:
       scripts:
