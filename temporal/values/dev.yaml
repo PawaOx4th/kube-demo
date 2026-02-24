@@ -1,0 +1,134 @@
+#--set server.replicaCount=1 \
+#--set cassandra.config.cluster_size=1 \
+#--set prometheus.enabled=false \
+#--set grafana.enabled=false \
+#--set elasticsearch.enabled=false \
+
+fullnameOverride: "kpc-kp-temporal"
+global:
+  postgresql:
+    auth:
+      username: temporal
+      password: temporal
+      database: temporal
+  security:
+    allowInsecureImages: true
+
+web:
+  image:
+    tag: 2.29.2
+  # ingress:
+  #   enabled: true
+  #   className: "nginx-internal"
+  #   annotations: {}
+  #   hosts:
+  #     - "dev-temporal.kpc-dev.com/"
+
+server:
+  image:
+    tag: 1.24.2.1
+  config:
+    persistence:
+      default:
+        driver: "sql"
+
+        sql:
+          driver: "postgres12"
+          host: kp-temporal-dev-postgresql
+          port: 5432
+          database: dev_temporal
+          user: dev_temporal
+          password: dev_temporal
+          # for a production deployment use this instead of `password` and provision the secret beforehand e.g. with a sealed secret
+          # it has a single key called `password`
+          # existingSecret: temporal-default-store
+          maxConns: 20
+          maxConnLifetime: "1h"
+          # tls:
+          #  enabled: true
+          #  enableHostVerification: true
+          #  serverName: _HOST_ # this is strictly required when using serverless CRDB offerings
+          #  caFile: /path/to/certs/<CA-file> # Here we assumed that caFile, certFile, keyFile are stored in one secret mounted as 'secret-with-certs' (see: server.additionalVolumes and server.additionalVolumeMounts sections).
+          #  certFile: /path/to/certs/<client-cert-file>
+          #  keyFile: /path/to/certs/<client-key-file>
+
+      visibility:
+        driver: "sql"
+
+        sql:
+          driver: "postgres12"
+          host: kp-temporal-dev-postgresql
+          port: 5432
+          database: dev_temporal_visibility
+          user: dev_temporal_visibility
+          password: dev_temporal_visibility
+          # for a production deployment use this instead of `password` and provision the secret beforehand e.g. with a sealed secret
+          # it has a single key called `password`
+          # existingSecret: temporal-visibility-store
+          maxConns: 20
+          maxConnLifetime: "1h"
+          # tls:
+          #  enabled: true
+          #  enableHostVerification: true
+          #  serverName: _HOST_ # this is strictly required when using serverless CRDB offerings
+          #  caFile: /path/to/certs/<CA-file> # Here we assumed that caFile, certFile, keyFile are stored in one secret mounted as 'secret-with-certs' (see: server.additionalVolumes and server.additionalVolumeMounts sections).
+          #  certFile: /path/to/certs/<client-cert-file>
+          #  keyFile: /path/to/certs/<client-key-file>
+
+  # additionalVolumes:
+  #   - name: secret-with-certs
+  #     secret:
+  #       secretName: secret-with-certs
+  # additionalVolumeMounts:
+  #   - name: secret-with-certs
+  #     mountPath: /path/to/certs/
+
+cassandra:
+  enabled: false
+  config:
+    cluster_size: 1
+
+mysql:
+  enabled: false
+
+postgresql:
+  enabled: true
+  primary:
+    initdb:
+      scripts:
+        00_init_multiple_dbs.sql: |
+          CREATE USER dev_temporal WITH PASSWORD 'password123';
+          CREATE DATABASE dev_temporal OWNER dev_temporal;
+          GRANT ALL PRIVILEGES ON DATABASE dev_temporal TO dev_temporal;
+
+          CREATE USER dev_temporal_visibility WITH PASSWORD 'password456';
+          CREATE DATABASE dev_temporal_visibility OWNER dev_temporal_visibility;
+          GRANT ALL PRIVILEGES ON DATABASE dev_temporal_visibility TO dev_temporal_visibility;
+
+prometheus:
+  enabled: true
+
+grafana:
+  enabled: true
+  ingress:
+    enabled: true
+    annotations:
+      kubernetes.io/ingress.class: nginx-internal
+    hosts:
+      - dev-temporal-grafana.kpc-dev.com
+
+  env:
+    GF_AUTH_ANONYMOUS_ENABLED: "true"
+    GF_AUTH_ANONYMOUS_ORG_ROLE: "Viewer"
+
+elasticsearch:
+  enabled: false
+
+schema:
+  createDatabase:
+    enabled: false
+  ### Incase new installation need enable setup and update
+  setup:
+    enabled: false
+  update:
+    enabled: false

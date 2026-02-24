@@ -1,0 +1,43 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: temporal
+  namespace: argocd
+spec:
+  goTemplate: true
+  goTemplateOptions: ["missingkey=error"]
+  generators:
+    - list:
+        elements:
+          - name: temporal
+            env: dev
+            project: develop
+  template:
+    metadata:
+      name: "kp-{{.name}}-{{.env}}"
+      namespace: argocd
+    spec:
+      destination:
+        namespace: "{{.env}}"
+        server: https://kubernetes.default.svc
+      project: "{{.project}}"
+      source:
+        helm:
+          valueFiles:
+            - values.yaml
+            - "values/{{.env}}.yaml"
+          parameters: []
+        path: "temporal"
+        repoURL: "https://github.com/PawaOx4th/kube-demo.git"
+        targetRevision: main
+#      syncPolicy:
+#        automated:
+#          allowEmpty: false
+#          prune: true
+#          selfHeal: true
+#        syncOptions:
+#          - Validate=true
+#          - CreateNamespace=true
+#          - PrunePropagationPolicy=foreground
+#          - PruneLast=true
+

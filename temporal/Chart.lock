@@ -1,0 +1,18 @@
+dependencies:
+- name: cassandra
+  repository: https://charts.helm.sh/incubator
+  version: 0.14.3
+- name: prometheus
+  repository: https://prometheus-community.github.io/helm-charts
+  version: 25.22.0
+- name: elasticsearch
+  repository: https://helm.elastic.co
+  version: 7.17.3
+- name: grafana
+  repository: https://grafana.github.io/helm-charts
+  version: 8.0.2
+- name: postgresql
+  repository: https://kingpowerclick.github.io/helm-chart
+  version: 16.7.20
+digest: sha256:ca8b02e49db34685f532f331b92fe52a57ab4145861428ac589cb771e30c22c9
+generated: "2026-02-24T18:02:54.275123+07:00"
