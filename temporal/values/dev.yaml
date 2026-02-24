@@ -106,10 +106,10 @@ postgresql:
           GRANT ALL PRIVILEGES ON DATABASE dev_temporal_visibility TO dev_temporal_visibility;
 
 prometheus:
-  enabled: true
+  enabled: false
 
 grafana:
-  enabled: true
+  enabled: false
   ingress:
     enabled: true
     annotations:
