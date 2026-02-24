@@ -38,7 +38,7 @@ server:
           port: 5432
           database: dev_temporal
           user: dev_temporal
-          password: dev_temporal
+          password: password123
           # for a production deployment use this instead of `password` and provision the secret beforehand e.g. with a sealed secret
           # it has a single key called `password`
           # existingSecret: temporal-default-store
@@ -61,7 +61,7 @@ server:
           port: 5432
           database: dev_temporal_visibility
           user: dev_temporal_visibility
-          password: dev_temporal_visibility
+          password: password456
           # for a production deployment use this instead of `password` and provision the secret beforehand e.g. with a sealed secret
           # it has a single key called `password`
           # existingSecret: temporal-visibility-store
