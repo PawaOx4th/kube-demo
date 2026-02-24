@@ -93,6 +93,8 @@ mysql:
 
 postgresql:
   enabled: true
+  image:
+    tag: 17.5.0-debian-12-r3
   primary:
     initdb:
       scripts:
