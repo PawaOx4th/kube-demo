@@ -105,6 +105,8 @@ postgresql:
       tag: 17.5.0-debian-12-r3
   primary:
     initdb:
+      user: postgres
+      password: postgres
       scripts:
         00_init_multiple_dbs.sql: |
           CREATE USER dev_temporal WITH PASSWORD 'password123';
