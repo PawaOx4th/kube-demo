@@ -99,12 +99,12 @@ postgresql:
     initdb:
       scripts:
         00_init_multiple_dbs.sql: |
-          CREATE USER dev_temporal WITH PASSWORD 'password123';
-          CREATE DATABASE dev_temporal OWNER dev_temporal;
+          CREATE USER IF NOT EXISTS dev_temporal WITH PASSWORD 'password123';
+          CREATE DATABASE IF NOT EXISTS dev_temporal OWNER dev_temporal;
           GRANT ALL PRIVILEGES ON DATABASE dev_temporal TO dev_temporal;
 
-          CREATE USER dev_temporal_visibility WITH PASSWORD 'password456';
-          CREATE DATABASE dev_temporal_visibility OWNER dev_temporal_visibility;
+          CREATE USER IF NOT EXISTS dev_temporal_visibility WITH PASSWORD 'password456';
+          CREATE DATABASE IF NOT EXISTS dev_temporal_visibility OWNER dev_temporal_visibility;
           GRANT ALL PRIVILEGES ON DATABASE dev_temporal_visibility TO dev_temporal_visibility;
 
 prometheus:
