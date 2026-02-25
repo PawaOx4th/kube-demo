@@ -141,6 +141,6 @@ schema:
     enabled: false
   ### Incase new installation need enable setup and update
   setup:
-    enabled: false
+    enabled: true
   update:
-    enabled: false
+    enabled: true
